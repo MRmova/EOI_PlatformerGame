@@ -20,6 +20,11 @@ public class EnemyHealth : MonoBehaviour
     float timer;
     EnemyMovement enemyMovement;
 
+    [Header("Dropping")]
+    public GameObject HP;
+    public GameObject Coin;
+    public int total;
+
     private void Start()
     {
         anim = GetComponent<Animator>();
@@ -60,13 +65,28 @@ public class EnemyHealth : MonoBehaviour
         Invoke("DesactivateTextUI", 0.3f);
 
         if (currentHealth <= 0) Death();
+        else if (!enemyMovement.animAttacking) anim.SetTrigger("Hit");
     }
     void Death()
     {
+        Dropping();
         death = true;
-        anim.SetTrigger("Death");
+        anim.SetTrigger("Death");        
         Destroy(gameObject, 2);
     }
+
+    void Dropping()
+    {
+        int j = Random.Range(1, total);
+        for (int i = 0; i < j; i++)
+        {
+            if(Random.value < 0.2f)
+                Instantiate(HP, transform.position, transform.rotation);
+            else
+                Instantiate(Coin, transform.position, transform.rotation);
+        }
+    }
+
     void DesactivateTextUI()
     {
         textUI.gameObject.SetActive(false);
